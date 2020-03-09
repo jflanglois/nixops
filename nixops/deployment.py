@@ -711,8 +711,8 @@ class Deployment(object):
                 else:
                     # Only activate if the profile has changed.
                     new_profile_cmd = '; '.join([
-                        'old_gen="$(readlink -f /nix/var/nix/profiles/system)"',
-                        'new_gen="$(readlink -f "{0}")"',
+                        'old_gen="$(/run/current-system/sw/bin/readlink -f /nix/var/nix/profiles/system)"',
+                        'new_gen="$(/run/current-system/sw/bin/readlink -f "{0}")"',
                         '[ "x$old_gen" != "x$new_gen" ] || exit 111',
                         setprof
                     ]).format(m.new_toplevel)
@@ -976,7 +976,7 @@ class Deployment(object):
                         # attribute, because the machine may have been
                         # booted from an older NixOS image.
                         if not r.state_version:
-                            os_release = r.run_command("cat /etc/os-release", capture_stdout=True)
+                            os_release = r.run_command("/run/current-system/sw/bin/cat /etc/os-release", capture_stdout=True)
                             match = re.search('VERSION_ID="([0-9]+\.[0-9]+).*"', os_release)
                             if match:
                                 r.state_version = match.group(1)
